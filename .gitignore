@@ -1,0 +1,27 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Node
+node_modules/
+dist/
+.angular/
+
+# Java
+target/
+*.jar
+*.war
+
+# OS
+.DS_Store
+Thumbs.db
+__MACOSX/
+
+# Archive
+*.zip
+*.rar
+
+# Git
+.git/
+**/ .git/
