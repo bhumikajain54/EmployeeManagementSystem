@@ -12,39 +12,25 @@ import org.springframework.web.bind.annotation.*;
 public class MailController {
 
     private final MailService mailService;
+    private final MailRepository mailRepository;
+
     @Autowired
-    private MailRepository mailRepository;
-    @Autowired
-    public MailController(MailService mailService) {
+    public MailController(MailService mailService, MailRepository mailRepository) {
         this.mailService = mailService;
+        this.mailRepository = mailRepository;
     }
+
     @PostMapping("send/{mail}")
     public ResponseEntity<String> sendMail(@PathVariable String mail, @RequestBody MailStructure request) {
-        System.out.println("Received POST request body: " + request.getEmailId() + ", " + request.getLocalDate());
-
-        // Process the request body
-        if (mailService != null) {
+        if (mailService != null && request != null) {
             mailService.sendMail(mail, request);
             mailRepository.save(request);
-        } else {
-            // Handle the case where mailService is null
-            // You can log an error or throw an exception, depending on your requirement
+        } else if (mailService == null) {
             throw new IllegalStateException("mailService is null");
+        } else {
+            return ResponseEntity.badRequest().body("Request body is missing");
         }
 
-        return ResponseEntity.ok("Received POST request body: " + request.getEmailId() + ", " + request.getLocalDate());
+        return ResponseEntity.ok("Mail sent successfully to: " + request.getEmailId());
     }
-
-    /*public void sendEMail(String email,@RequestBody MailStructure ml) {
-        // Check if mailService is null before invoking its method
-        if (mailService != null) {
-            mailService.sendMail(email, ml);
-        } else {
-            // Handle the case where mailService is null
-            // You can log an error or throw an exception, depending on your requirement
-            throw new IllegalStateException("mailService is null");
-        }
-    }*/
-
-
 }

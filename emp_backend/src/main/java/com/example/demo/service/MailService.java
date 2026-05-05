@@ -10,13 +10,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class MailService {
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private final JavaMailSender javaMailSender;
 
     @Value("${spring.mail.username}")
     private String fromMail;
 
-    public void sendMail(String recipient,MailStructure mailStructure) {
+    @Autowired
+    public MailService(JavaMailSender javaMailSender) {
+        this.javaMailSender = javaMailSender;
+    }
+
+    public void sendMail(String recipient, MailStructure mailStructure) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(recipient);
         message.setFrom(fromMail);
@@ -24,11 +28,15 @@ public class MailService {
         message.setText(mailStructure.getMessage());
 
         javaMailSender.send(message);
-
-        System.out.println("Mail sent successfully....");
     }
 
     public void sendMail(String text, String subject, String to) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setFrom(fromMail);
+        message.setSubject(subject);
+        message.setText(text);
 
+        javaMailSender.send(message);
     }
 }
